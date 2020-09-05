@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.3.3.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
+	id "org.liquibase.gradle" version "2.0.4"
 }
 
 group = 'com.ahmedPostgresLiquibase'
@@ -13,6 +14,8 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 }
+
+def changeLog = "$projectDir/src/main/resources/db/changelog/changelog-master.xml"
 
 repositories {
 	mavenCentral()
@@ -26,6 +29,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly "org.liquibase:liquibase-gradle-plugin:1.1.1"
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -34,4 +38,19 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+tasks.register("dev") {
+println "executing dev"
+
+liquibase {
+    activities {
+        main {
+            changeLogFile changeLog
+            url 'jdbc:postgresql://localhost:5432/postgres/ahmed_test_db'
+            username 'postgres'
+            password 'pa55word'
+        }
+    }
+}    
 }
