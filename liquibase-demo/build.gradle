@@ -15,8 +15,6 @@ configurations {
 	}
 }
 
-def changeLog = "$projectDir/src/main/resources/db/changelog/changelog-master.xml"
-
 repositories {
 	mavenCentral()
 }
@@ -38,19 +36,4 @@ dependencies {
 
 test {
 	useJUnitPlatform()
-}
-
-tasks.register("dev") {
-println "executing dev"
-
-liquibase {
-    activities {
-        main {
-            changeLogFile changeLog
-            url 'jdbc:postgresql://localhost:5432/postgres/ahmed_test_db'
-            username 'postgres'
-            password 'pa55word'
-        }
-    }
-}    
 }
